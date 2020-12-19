@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Vignette Author" />
+
+<meta name="date" content="2020-12-19" />
+
+<title>Vignette Title</title>
+
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Vignette Title</h1>
+<h4 class="author">Vignette Author</h4>
+<h4 class="date">2020-12-19</h4>
+
+
+
+<div id="shrinkage" class="section level1">
+<h1>shrinkage</h1>
+<p>This function can get the R-square’s k-fold cross validation to evaluate the generalization ability of regression model. We can get the orignal R-square and the k-fold cross-validated R-square.The less the R-square is reduced, the more accurate the prediction is.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(bootstrap)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#&gt; Warning: 程辑包&#39;bootstrap&#39;是用R版本4.0.3 来建造的</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a>shrinkage &lt;-<span class="st"> </span><span class="cf">function</span>(fit, k){</span>
+<span id="cb1-4"><a href="#cb1-4"></a>  </span>
+<span id="cb1-5"><a href="#cb1-5"></a>  </span>
+<span id="cb1-6"><a href="#cb1-6"></a>  theta.fit &lt;-<span class="st"> </span><span class="cf">function</span>(x,y){<span class="kw">lsfit</span>(x,y)}</span>
+<span id="cb1-7"><a href="#cb1-7"></a>  theta.predict &lt;-<span class="st"> </span><span class="cf">function</span>(fit, x){<span class="kw">cbind</span>(<span class="dv">1</span>,x)<span class="op">%*%</span>fit<span class="op">$</span>coef}</span>
+<span id="cb1-8"><a href="#cb1-8"></a>  </span>
+<span id="cb1-9"><a href="#cb1-9"></a>  x &lt;-<span class="st"> </span>fit<span class="op">$</span>model[,<span class="dv">2</span><span class="op">:</span><span class="kw">ncol</span>(fit<span class="op">$</span>model)]</span>
+<span id="cb1-10"><a href="#cb1-10"></a>  y &lt;-<span class="st"> </span>fit<span class="op">$</span>model[,<span class="dv">1</span>]</span>
+<span id="cb1-11"><a href="#cb1-11"></a>  </span>
+<span id="cb1-12"><a href="#cb1-12"></a>  results &lt;-<span class="st"> </span><span class="kw">crossval</span>(x, y, theta.fit, theta.predict, <span class="dt">ngroup=</span>k)</span>
+<span id="cb1-13"><a href="#cb1-13"></a>  r2 &lt;-<span class="st"> </span><span class="kw">cor</span>(y, fit<span class="op">$</span>fitted.values)<span class="op">^</span><span class="dv">2</span></span>
+<span id="cb1-14"><a href="#cb1-14"></a>  r2cv &lt;-<span class="st"> </span><span class="kw">cor</span>(y, results<span class="op">$</span>cv.fit)<span class="op">^</span><span class="dv">2</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a>  <span class="kw">cat</span>(<span class="st">&quot;Original R-square =&quot;</span>, r2, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb1-16"><a href="#cb1-16"></a>  <span class="kw">cat</span>(k, <span class="st">&quot;Fold Cross-Validated R-square =&quot;</span>, r2cv, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb1-17"><a href="#cb1-17"></a>  <span class="kw">cat</span>(<span class="st">&quot;Change =&quot;</span>, r2<span class="op">-</span>r2cv, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb1-18"><a href="#cb1-18"></a>}</span>
+<span id="cb1-19"><a href="#cb1-19"></a></span>
+<span id="cb1-20"><a href="#cb1-20"></a>fit &lt;-<span class="st"> </span><span class="kw">lm</span>(mpg <span class="op">~</span><span class="st"> </span>hp <span class="op">+</span><span class="st"> </span>drat<span class="op">+</span><span class="st"> </span>wt<span class="op">+</span><span class="st"> </span>qsec, <span class="dt">data=</span>mtcars)</span>
+<span id="cb1-21"><a href="#cb1-21"></a>k=<span class="dv">10</span></span>
+<span id="cb1-22"><a href="#cb1-22"></a><span class="kw">shrinkage</span>(fit,k)</span>
+<span id="cb1-23"><a href="#cb1-23"></a><span class="co">#&gt; Original R-square = 0.8453853 </span></span>
+<span id="cb1-24"><a href="#cb1-24"></a><span class="co">#&gt; 10 Fold Cross-Validated R-square = 0.7780129 </span></span>
+<span id="cb1-25"><a href="#cb1-25"></a><span class="co">#&gt; Change = 0.06737235</span></span></code></pre></div>
+</div>
+<div id="relweights" class="section level1">
+<h1>relweights</h1>
+<p>This function compute the relative weights of each predictor variable of the regression model. We can see the degree to which each predictor variable explains the model variance. And we can know that which variable is important.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>relweights &lt;-<span class="st"> </span><span class="cf">function</span>(fit){</span>
+<span id="cb2-2"><a href="#cb2-2"></a>  R &lt;-<span class="st"> </span><span class="kw">cor</span>(fit<span class="op">$</span>model)</span>
+<span id="cb2-3"><a href="#cb2-3"></a>  nvar &lt;-<span class="st"> </span><span class="kw">ncol</span>(R)</span>
+<span id="cb2-4"><a href="#cb2-4"></a>  rxx &lt;-<span class="st"> </span>R[<span class="dv">2</span><span class="op">:</span>nvar, <span class="dv">2</span><span class="op">:</span>nvar]</span>
+<span id="cb2-5"><a href="#cb2-5"></a>  rxy &lt;-<span class="st"> </span>R[<span class="dv">2</span><span class="op">:</span>nvar, <span class="dv">1</span>]</span>
+<span id="cb2-6"><a href="#cb2-6"></a>  svd &lt;-<span class="st"> </span><span class="kw">eigen</span>(rxx)</span>
+<span id="cb2-7"><a href="#cb2-7"></a>  evec &lt;-<span class="st"> </span>svd<span class="op">$</span>vectors</span>
+<span id="cb2-8"><a href="#cb2-8"></a>  ev &lt;-<span class="st"> </span>svd<span class="op">$</span>values</span>
+<span id="cb2-9"><a href="#cb2-9"></a>  delta &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="kw">sqrt</span>(ev))</span>
+<span id="cb2-10"><a href="#cb2-10"></a>  lambda &lt;-<span class="st"> </span>evec <span class="op">%*%</span><span class="st"> </span>delta <span class="op">%*%</span><span class="st"> </span><span class="kw">t</span>(evec)</span>
+<span id="cb2-11"><a href="#cb2-11"></a>  lambdasq &lt;-<span class="st"> </span>lambda<span class="op">^</span><span class="dv">2</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a>  beta &lt;-<span class="st"> </span><span class="kw">solve</span>(lambda) <span class="op">%*%</span><span class="st"> </span>rxy</span>
+<span id="cb2-13"><a href="#cb2-13"></a>  rsquare &lt;-<span class="st"> </span><span class="kw">colSums</span>(beta<span class="op">^</span><span class="dv">2</span>)</span>
+<span id="cb2-14"><a href="#cb2-14"></a>  rawwgt &lt;-<span class="st"> </span>lambdasq <span class="op">%*%</span><span class="st"> </span>beta<span class="op">^</span><span class="dv">2</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a>  import &lt;-<span class="st"> </span>(rawwgt <span class="op">/</span><span class="st"> </span>rsquare)<span class="op">*</span><span class="dv">100</span></span>
+<span id="cb2-16"><a href="#cb2-16"></a>  lbls &lt;-<span class="st"> </span><span class="kw">names</span>(fit<span class="op">$</span>model[<span class="dv">2</span><span class="op">:</span>nvar])</span>
+<span id="cb2-17"><a href="#cb2-17"></a>  <span class="kw">rownames</span>(import) &lt;-<span class="st"> </span>lbls</span>
+<span id="cb2-18"><a href="#cb2-18"></a>  <span class="kw">colnames</span>(import) &lt;-<span class="st"> &quot;Weights&quot;</span></span>
+<span id="cb2-19"><a href="#cb2-19"></a>  <span class="kw">barplot</span>(<span class="kw">t</span>(import),<span class="dt">names.arg=</span>lbls, <span class="dt">ylab=</span><span class="st">&quot;% of R-square&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;Predictor Variables&quot;</span>, </span>
+<span id="cb2-20"><a href="#cb2-20"></a>          <span class="dt">main=</span><span class="st">&quot;Relative Importance of Predictor Variables&quot;</span>, <span class="dt">sub=</span><span class="kw">paste</span>(<span class="st">&quot;r-square=&quot;</span>, <span class="kw">round</span>(rsquare, <span class="dt">digits=</span><span class="dv">3</span>)))</span>
+<span id="cb2-21"><a href="#cb2-21"></a>  <span class="kw">return</span>(import)</span>
+<span id="cb2-22"><a href="#cb2-22"></a>}</span>
+<span id="cb2-23"><a href="#cb2-23"></a></span>
+<span id="cb2-24"><a href="#cb2-24"></a>fit &lt;-<span class="st"> </span><span class="kw">lm</span>(mpg <span class="op">~</span><span class="st"> </span>hp <span class="op">+</span><span class="st"> </span>drat<span class="op">+</span><span class="st"> </span>wt <span class="op">+</span><span class="st"> </span>qsec, <span class="dt">data=</span>mtcars)</span>
+<span id="cb2-25"><a href="#cb2-25"></a><span class="kw">relweights</span>(fit)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<pre><code>#&gt;        Weights
+#&gt; hp   25.161362
+#&gt; drat 22.620527
+#&gt; wt   42.487780
+#&gt; qsec  9.730331</code></pre>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
