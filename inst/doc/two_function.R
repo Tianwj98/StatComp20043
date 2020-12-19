@@ -1,28 +1,4 @@
----
-title: "Vignette Title"
-author: "Vignette Author"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
-
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
-# shrinkage
-
-This function can get the R-square's k-fold cross validation to evaluate 
-the generalization ability of regression model. We can get the orignal R-square and
-the k-fold cross-validated R-square.The less the R-square is reduced, the more accurate the prediction is.
-
-```{r}
+## -----------------------------------------------------------------------------
 library(bootstrap)
 shrinkage <- function(fit, k){
   
@@ -44,16 +20,8 @@ shrinkage <- function(fit, k){
 fit <- lm(mpg ~ hp + drat+ wt+ qsec, data=mtcars)
 k=10
 shrinkage(fit,k)
-```
 
-
-# relweights
-
-This function compute the relative weights of each predictor variable of the regression model.
-We can see the degree to which each predictor variable explains the model variance.
-And we can know that which variable is important.
-
-```{r}
+## -----------------------------------------------------------------------------
 relweights <- function(fit){
   R <- cor(fit$model)
   nvar <- ncol(R)
@@ -79,5 +47,4 @@ relweights <- function(fit){
 
 fit <- lm(mpg ~ hp + drat+ wt + qsec, data=mtcars)
 relweights(fit)
-```
 
