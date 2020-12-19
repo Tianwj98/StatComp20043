@@ -1,0 +1,1333 @@
+---
+title: "Vignette Title"
+author: "Vignette Author"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Homework 1
+
+## Question
+  
+  Use knitr to produce 3 examples in the book. The 1st example should contain texts and at least one figure. The 2nd example should contains texts and at least one table. The 3rd example should contain at least a couple of LaTeX formulas.
+  
+## Answer
+  Example 1
+  
+  使用R语言自带的数据集women（包含15个年龄在30~39岁间女性的身高和体重信息），作出身高和体重的散点图,并将体重作为预测变量，身高作为响应变量做简单线性回归，在图中作出回归线。
+  
+```{r}
+fit<-lm(weight~height,data=women)
+plot(women$height,women$weight,xlab="Height",ylab="Weight")
+abline(fit)
+```
+  
+  Example 2
+  
+  作出上面用到的数据集women身高和体重的表格
+  
+```{r}
+knitr::kable(head(women))
+```
+  
+  Example 3
+
+  公式：
+  $$\sum_{i=0}^{n}{(x_i)}\\$$
+  $$\int_{a}^{b}{sinx}dx$$
+  $$\lim_{x\to0}\frac{sinx}{x}\\$$
+  
+  
+# Homework 2
+
+## Question 1
+
+The Pareto(a, b) distribution has cdf
+$$F(x)=1-(\frac{b}{x})^a ,x\ge b > 0, a > 0.$$
+Derive the probability inverse transformation $F^{-1}(U)$ and use the inverse
+transform method to simulate a random sample from the Pareto(2, 2) distribution.
+Graph the density histogram of the sample with the Pareto(2, 2)
+density superimposed for comparison.
+
+## Answer 1
+
+First, we get that $F^{-1}(U)=\frac{b}{(1-u)^{\frac{1}{a}}},1> u ≥ 0$,
+then generate a random u from Uniform(0,1) and Graph the density histogram of the sample with the Pareto(2, 2)
+density superimposed for comparison, where $f(x)=8x^{-4}$
+
+```{r}
+set.seed(2)
+n<-1000
+u<-runif(n)
+x<-2/(1-u)^(1/2)
+hist(x,prob=TRUE,main = expression(f(x)==8*x^-4))
+y <- seq(2,100, .01)
+lines(y, 8*y^(-4))
+```
+
+## Question 2
+
+The rescaled Epanechnikov kernel is a symmetric density function
+$$f_e(x)=\frac{3}{4}(1-x^2),\left\vert x \right\vert\le 1$$
+Devroye and Gy¨orfi [71, p. 236] give the following algorithm for simulation
+from this distribution. Generate iid $U_1, U_2, U_3$ ∼ Uniform(−1, 1). If $|U_3|$ 
+≥ $|U_2|$ and $|U_3| ≥ |U_1$|, deliver $U_2$; otherwise deliver $U_3$. Write a function
+to generate random variates from $f_e$, and construct the histogram density
+estimate of a large simulated random sample.
+
+## Answer 2
+
+We can get the cdf:$$F(x)=-\frac{1}{4}x^3+\frac{3}{4}x+\frac{1}{2},\left\vert x \right\vert\le 1$$
+Let F(x)=u, we get a cubic equation in one unknown:$x^3-3x+4u-2=0$, since $\left\vert x \right\vert\le 1$, 
+$x=2\sqrt[3]{r}cos(\theta+\frac{4}{3}\pi)$, where r=1, $\theta=\frac{1}{3}arccos(-\frac{4u-2}{2r})$.
+Then use the inverse transform method to simulate a random sample and construct the histogram density
+estimate of the simulated random sample.
+
+```{r}
+set.seed(3)
+n<-1000
+u<-runif(n)
+r<-1
+q<-4*u-2
+theta<-acos(-q/(2*r))/3
+x<-2*cos(theta+4*pi/3)
+hist(x,prob=TRUE)
+
+```
+
+## Question 3
+Prove that the algorithm given in Question 2 generates variates from the
+density $f_e$
+
+## Answer 3
+
+We deliver the $u_0$ according to the question and construct the histogram of $u_0$.
+To prove that the algorithm given in Question 2 generates variates from the
+density $f_e$ we graph the density $f_e$ for comparison. Since they have a high degree of coincidence, the proposition is proved.
+```{r}
+set.seed(3)
+n<-1000
+u0<-c(1:1000)
+u1<-runif(n,-1,1)
+u2<-runif(n,-1,1)
+u3<-runif(n,-1,1)
+for(i in 1:1000){
+  if(abs(u3[i])>=abs(u2[i]) & abs(u3[i])>=abs(u1[i])){
+  u0[i]=u2[i]
+ }else
+ {u0[i]=u3[i]
+ }
+}
+hist(u0,prob=TRUE,main = expression(f(x)==(3/4)*(1-x^2)))
+y <- seq(-1,1, .01)
+lines(y, (3/4)*(1-y^2))
+```
+
+## Question 4
+
+It can be shown that the mixture in Exercise 3.12 has a Pareto distribution
+with cdf
+$$F(y)=1-(\frac{\beta}{\beta+y})^r, y\ge 0$$.
+(This is an alternative parameterization of the Pareto cdf given in Exercise
+3.3.) Generate 1000 random observations from the mixture with r = 4 and
+β = 2. Compare the empirical and theoretical (Pareto) distributions by graphing
+the density histogram of the sample and superimposing the Pareto density
+curve.
+
+## Answer 4
+
+First, we get that $F^{-1}(U)=\frac{\beta}{\sqrt[r]{1-u}}-\beta$, then generate a random u from Uniform(0,1) and graph the density histogram of the sample and superimposing the Pareto density curve for comparison, where r=4, $\beta=2$, and the pdf: $f(y)=\frac{r\beta^r}{(\beta+y)^{r+1}}$
+
+```{r}
+set.seed(4)
+n<-1000
+u<-runif(n)
+r<-4
+beta<-2
+y<-beta/(1-u)^(1/r)-beta
+hist(y,prob=TRUE,main = expression(f(y)==64/(2+y)^5))
+z<-seq(0,10, .01)
+lines(z,r*beta^r/(beta+z)^(r+1))
+```
+
+It shows  that they have a high degree of coincidence.
+
+
+# Homework 3
+
+## Question 5.1
+
+Compute a Monte Carlo estimate of 
+$$\int_{0}^{\pi/3} sin\,t\, {\rm d}t$$
+and compare your estimate with the exact value of the integral.
+
+## Answer 5.1
+
+```{r}
+set.seed(11)
+m<-10000
+t<-runif(m,min=0,max=pi/3)
+theta.hat<-mean(sin(t))*(pi/3)
+print(theta.hat)
+print(-cos(pi/3)+cos(0))
+```
+
+The estimate is $\hat{\theta}\dot{=}0.5043115$ and $\theta=0.5$.
+
+## Question 5.7
+
+Refer to Exercise 5.6. Use a Monte Carlo simulation to estimate θ by the
+antithetic variate approach and by the simple Monte Carlo method. Compute
+an empirical estimate of the percent reduction in variance using the antithetic
+variate. Compare the result with the theoretical value from Exercise 5.6.
+
+## Answer 5.7
+
+```{r}
+set.seed(111)
+n<-10000
+u<-runif(n)
+T1<-exp(u) #simple MC
+theta1<-mean(T1)
+s1<-var(T1)/n
+n1<-n/2
+u1<-u[1:n1]
+y1<-exp(u1)
+y2<-exp(1-u1)
+y<-(y1+y2)/2
+theta2<-mean(y) #antithetic variables
+s2<-var(y)/n1
+theta1
+theta2
+(s1-s2)/s1
+
+```
+
+The estimate with the simple Monte Carlo method is $\hat{\theta}_1=1.718662$ 
+
+The estimate with the antithetic variate approach is $\hat{\theta}_2=1.716873$
+
+The empirical estimate of the percent reduction is 96.78507%
+
+Now compute the theoretical value of the percent reduction：
+
+If the simple Monte Carlo approach is applied with n replicates, the variance of the
+estimator is $Var(\hat{\theta}_1)=Var(e^u)/n$, where
+
+$$Var(e^u)=E[e^{2u}]-(E[e^u])^2=-\frac{1}{2}e^2+2e-\frac{3}{2}$$
+
+Then we compute
+
+$$Cov(e^u,e^{1-u})=e-(e-1)^2$$
+As for antithetic variate approach ,the variance of the estimator is $Var(\hat{\theta}_2)=Var(\frac{e^u+e^{1-u}}{2})/(n/2)$, where
+
+$$Var(\frac{e^u+e^{1-u}}{2})=\frac{1}{4}(Var(e^u)+Var(e^{1-u})+2Cov(e^u,e^{1-u}))=-\frac{3}{4}e^2+\frac{5}{2}e-\frac{5}{4}$$
+So the theoretical value of the percent reduction is:$\frac{Var(\hat{\theta}_1)-Var(\hat{\theta}_2)}{Var(\hat{\theta}_1)}=0.9676701$
+
+```{r}
+e<-exp(1)
+v1=(-1/2)*e^2+2*e-3/2
+v2=(-3/4)*e^2+5*e/2-5/4
+(v1-2*v2)/v1
+
+```
+
+## Question 5.11
+
+If $\hat{\theta}_1$ and $\hat{\theta}_2$ are unbiased estimators of θ, and $\hat{\theta}_1$ and $\hat{\theta}_2$ are antithetic, we derived that $c^*$ = 1/2 is the optimal constant that minimizes the variance of
+$\hat{\theta}_c$= c$\hat{\theta}_1$ + (1 − c)$\hat{\theta}_2$. Derive $c^*$ for the general case. That is, if $\hat{\theta}_1$ and $\hat{\theta}_2$ are any two unbiased estimators of θ, find the value $c^*$ that minimizes the
+variance of the estimator $\hat{\theta}_c$ = c$\hat{\theta}_1$ + (1 − c)$\hat{\theta}_2$ in equation (5.11). ($c^*$ will be a function of the variances and the covariance of the estimators.)
+
+## Answer 5.11
+
+$$Var(\hat{\theta}_c)=c^2Var(\hat{\theta}_1)+(1-c)^2Var(\hat{\theta}_2)+2c(1-c)Cov(\hat{\theta}_1,\hat{\theta}_2)$$
+Simplify this formula, we get that
+
+$$Var(\hat{\theta}_c)=Var(\hat{\theta}_1-\hat{\theta}_2)c^2-2[Var(\hat{\theta}_2)-Cov(\hat{\theta}_1,\hat{\theta}_2)]c+Var(\hat{\theta}_2)$$
+If $\hat{\theta}_1$ and $\hat{\theta}_2$ are not the same, then $Var(\hat{\theta}_1-\hat{\theta}_2)＞0$, and the $c^*$ is 
+$$c^*=\frac{Var(\hat{\theta}_2)-Cov(\hat{\theta}_1,\hat{\theta}_2)}{Var(\hat{\theta}_1-\hat{\theta}_2)}$$
+
+If $\hat{\theta}_1$ and $\hat{\theta}_2$ are the same, then any $0\le c\le1$ is ok.
+
+
+# Homework 4
+
+## Question 5.13
+ 
+ Find two importance functions f1 and f2 that are supported on (1, ∞) and are ‘close’ to 
+$$g(x)=\frac{x^2}{\sqrt{2\pi}}e^{-x^2/2},x>1$$
+Which of your two importance functions should produce the smaller variance in estimating
+$$\int_{1}^{\infty} \frac{x^2}{\sqrt{2\pi}}e^{-x^2/2}\, {\rm d}x$$
+by importance sampling? Explain.
+
+## Answer 5.13
+
+Let $$f_1(x)=\sqrt{\frac{2}{\pi}}e^{-\frac{x^2}{2}},~~x>0$$ $$f_2(x)=xe^{-\frac{x^2}{2}},~~x>0$$
+
+```{r}
+x<-seq(1,10,.01)
+w<-2
+f1<-2*exp(-x^2/2)/sqrt(2*pi)
+f2<-x*exp(-x^2/2)
+g<-x^2*exp(-x^2/2)/sqrt(2*pi)
+plot(x,g,type="l",main="",ylab="",lwd=w)
+lines(x,f1,lty=2,lwd=w)
+lines(x,f2,lty=3,lwd=w)
+legend("topright",legend=c("g",1:2),lty=1:3,lwd=w,inset=0.02)
+
+plot(x,g/f1,type="l",main="",ylab="",ylim=c(0,4),lwd=w,lty=2)
+lines(x,g/f2,lty=3,lwd=w)
+legend("topright",legend=c(1:2),lty=2:3,lwd=w,inset=0.02)
+
+```
+
+The first figure represents two importance functions, the second figure represents g(x)/f(x). The function that corresponds to the most nearly constant ratio g(x)/f(x) appears to be f2. From the graphs, we might prefer f2 for the smallest variance.
+
+## Question 5.15
+
+Obtain the stratified importance sampling estimate in Example 5.13 and compare it with the result of Example 5.10.
+
+## Answer 5.15
+
+We  divide the interval (0,1) into five subintervals , (j/5,(j + 1)/5), j = 0, 1,..., 4. Then on the jth subinterval variables are generated from the density $$\frac{e^{-x}}{e^{-\frac{j-1}{5}}-e^{-\frac{j}{5}}}$$
+```{r}
+set.seed(111)
+m<-10000
+theta.hat<-s<-numeric(5)
+g<-function(x){
+  exp(-x-log(1+x^2))*(x>0)*(x<1)
+}
+u1<-runif(m/5,0,1/5)
+x1<--log(1-u1*(1-exp(-1/5)))
+fg1<-g(x1)/(exp(-x1)/(1-exp(-1/5)))
+theta.hat[1]<-mean(fg1)
+s[1]<-var(fg1)
+
+u2<-runif(m/5,1/5,2/5)
+x2<--log(exp(-1/5)-u2*(exp(-1/5)-exp(-2/5)))
+fg2<-g(x2)/(exp(-x2)/(exp(-1/5)-exp(-2/5)))
+theta.hat[2]<-mean(fg2)
+s[2]<-var(fg2)
+
+u3<-runif(m/5,2/5,3/5)
+x3<--log(exp(-2/5)-u3*(exp(-2/5)-exp(-3/5)))
+fg3<-g(x3)/(exp(-x3)/(exp(-2/5)-exp(-3/5)))
+theta.hat[3]<-mean(fg3)
+s[3]<-var(fg3)
+
+u4<-runif(m/5,3/5,4/5)
+x4<--log(exp(-3/5)-u4*(exp(-3/5)-exp(-4/5)))
+fg4<-g(x4)/(exp(-x4)/(exp(-3/5)-exp(-4/5)))
+theta.hat[4]<-mean(fg4)
+s[4]<-var(fg4)
+
+u5<-runif(m/5,4/5,5/5)
+x5<--log(exp(-4/5)-u5*(exp(-4/5)-exp(-5/5)))
+fg5<-g(x5)/(exp(-x5)/(exp(-4/5)-exp(-5/5)))
+theta.hat[5]<-mean(fg5)
+s[5]<-var(fg5)
+
+sum(theta.hat)
+mean(s)
+```
+
+We get that $\hat{\theta}=0.5242221$ and the variance of the estimator is 4.430502e-07
+Compare it with the result of Example 5.10 and we konw that two estimators are similar with each other, but more than 99% reduction in variance.
+
+
+## Question 6.4
+ 
+ Suppose that X1,...,Xn are a random sample from a from a lognormal distribution with unknown parameters. Construct a 95% confidence interval for the parameter µ. Use a Monte Carlo method to obtain an empirical estimate
+of the confidence level.
+
+## Answer 6.4
+
+If $lnX\sim N(\mu,\sigma^2)$, let $Y=LnX$, $S^2$ is the sample variance of Y,  then
+$$T=\frac{\sqrt{n}(\bar{Y}-\mu)}{S}\sim t(n-1)$$
+The confidence interval is given by
+$$(\bar{Y}-\frac{S}{\sqrt{n}}t_{\alpha/2}(n-1),\bar{Y}+\frac{S}{\sqrt{n}}t_{\alpha/2}(n-1))$$
+
+Here we let µ = 0, σ = 2, n = 20, m = 1000 replicates, and α = 0.05. The sample proportion of intervals that
+contain µ = 0 is a Monte Carlo estimate of the true confidence level.
+```{r}
+set.seed(100)
+n<-20
+alpha<-0.05
+UCL<-replicate(1000,expr={
+  x<-rlnorm(n,mean=0,sd=2)
+  mean(log(x))-sd(log(x))*qt(alpha/2,df=n-1)/sqrt(n)
+})
+LCL<-replicate(1000,expr={
+  x<-rlnorm(n,mean=0,sd=2)
+  mean(log(x))+sd(log(x))*qt(alpha/2,df=n-1)/sqrt(n)
+})
+sum(UCL>0 & LCL<0)
+mean(UCL>0 & LCL<0)
+```
+
+The result is that 957 intervals satisfied (UCL > 0 & LCL < 0), so the empirical confi-
+dence level is 95.7% in this experiment.
+## Question 6.5
+
+Suppose a 95% symmetric t-interval is applied to estimate a mean, but the
+sample data are non-normal. Then the probability that the confidence interval
+covers the mean is not necessarily equal to 0.95. Use a Monte Carlo experiment
+to estimate the coverage probability of the t-interval for random samples of
+χ2(2) data with sample size n = 20. Compare your t-interval results with the
+simulation results in Example 6.4. (The t-interval should be more robust to
+departures from normality than the interval for variance.)
+
+## Answer 6.5
+
+The confidence interval is given by
+$$(\bar{X}-\frac{S}{\sqrt{n}}t_{\alpha/2}(n-1),\bar{X}+\frac{S}{\sqrt{n}}t_{\alpha/2}(n-1))$$
+Where $S^2$ is the sample variance of Y
+Then use a Monte Carlo experiment to estimate the coverage probability of the t-interval for random samples of
+χ2(2) data with sample size n = 20. Here, the mean of the chi-square distribution is 2.
+
+```{r}
+set.seed(99)
+n<-20
+alpha<-0.05
+UCL<-replicate(1000,expr={
+  x<-rchisq(n,df=2)
+  mean(x)-sd(x)*qt(alpha/2,df=n-1)/sqrt(n)
+})
+LCL<-replicate(1000,expr={
+  x<-rchisq(n,df=2)
+  mean(x)+sd(x)*qt(alpha/2,df=n-1)/sqrt(n)
+})
+sum(UCL>2 & LCL<2)
+mean(UCL>2 & LCL<2)
+
+```
+
+The result is that 920 intervals satisfied (UCL > 2& LCL < 2), so the empirical confi-
+dence level is 92.0% in this experiment and is not much different with 95%. So the coverage is better than the simulation results in Example 6.4.
+
+
+# Homework 5
+
+## Question 6.7
+
+Estimate the power of the skewness test of normality against symmetric
+Beta(α, α) distributions and comment on the results. Are the results different
+for heavy-tailed symmetric alternatives such as t(ν)?
+
+## Answer 6.7
+
+```{r}
+set.seed(102)
+sk<-function(x){
+  xbar<-mean(x)
+  m3<-mean((x-xbar)^3)
+  m2<-mean((x-xbar)^2)
+  return(m3/m2^1.5)
+}
+alpha<-0.05
+n<-30
+m<-10000
+a<-c(seq(5,100,5))
+N<-length(a)
+pwr<-numeric(N)
+cv<-qnorm(1-alpha/2,0,sqrt(6*(n-2)/((n+1)*(n+3))))
+for(j in 1:N){
+  a1<-a[j]
+  sktests<-numeric(m)
+  for(i in 1:m){
+    x<-rbeta(n,a1,a1)
+    sktests[i]<-as.integer(abs(sk(x))>=cv)
+  }
+  pwr[j]<-mean(sktests)
+}
+plot(a,pwr,xlab=bquote(a),ylim=c(0,0.2))
+se<-sqrt(pwr*(1-pwr)/m)
+lines(a,pwr+se,lty=3)
+lines(a,pwr-se,lty=3)
+```
+
+图为对对称Beta(α，α)分布估计偏度正态性检验的功效$\hat{\pi}(\epsilon)\pm\hat{se}(\hat{\pi}(\epsilon))$可以看出当α大于20时，经验检验功效均与0.05即所选取的显著水平相近。
+
+## Question 6.8
+
+ Refer to Example 6.16. Repeat the simulation, but also compute the F test of equal variance, at significance level 
+ $\hat{α} \dot{=} 0.055$. Compare the power of the Count Five test and F test for small, medium, and large sample sizes. (Recall that the F test is not applicable for non-normal distributions.)
+ 
+## Answer 6.8
+
+```{r}
+set.seed(103)
+count5test<-function(x,y){
+  X<-x-mean(x)
+  Y<-y-mean(y)
+  outx<-sum(X>max(Y))+sum(X<min(Y))
+  outy<-sum(Y>max(X))+sum(Y<min(X))
+  return(as.integer(max(c(outx,outy))>5))
+}
+m<-10000
+sigma1<-1
+sigma2<-1.5
+n<-c(20,500,10000)
+CFpower<-numeric(length(n))
+Fpower<-numeric(length(n))
+
+for(i in 1:length(n)){
+  CFpower[i]<-mean(replicate(m,expr={
+  x<-rnorm(n[i],0,sigma1)
+  y<-rnorm(n[i],0,sigma2)
+  count5test(x,y)
+}))
+  
+  pvalues<-replicate(m,expr={
+  x<-rnorm(n[i],0,sigma1)
+  y<-rnorm(n[i],0,sigma2)
+  Ftest<-var.test(x,y,alternative="two.sided")
+  Ftest$p.value
+})
+
+  Fpower[i]<-mean(pvalues<=0.055)
+}
+
+print(CFpower)
+print(Fpower)
+
+```
+
+上面分别为小样本、中样本和大样本的Count Five检验和F检验的功效，其中小样本选取20，中样本选取500，大样本选取10000
+可以看出在检验两个方差不等的正态分布时，小样本的情况下F检验功效更高 ，样本足够大时，两者检验功效皆为1。
+
+## Question 6.C
+
+Repeat Examples 6.8 and 6.10 for Mardia’s multivariate skewness test. Mardia [187] proposed tests of multivariate normality based on multivariate generalizations of skewness and kurtosis. If X and Y are iid, the multivariate
+population skewness $β_{1,d}$ is defined by Mardia as
+$$\beta_{1,d}=E[(X-\mu)^T\Sigma^{-1}(Y-\mu)]^3$$
+Under normality, $β_{1,d}= 0$. The multivariate skewness statistic is
+$$b_{1,d}=\frac{1}{n^2}\sum_{i,j=1}^n ((X_i-\bar{X})^T\hat{\Sigma}^{-1}((X_j-\bar{X}))^3$$
+where $\hat{\Sigma}^{-1} $is the maximum likelihood estimator of covariance. Large values of
+$b_{1,d}$ are significant. The asymptotic distribution of $nb_{1,d}/6$ is chisquared with
+d(d + 1)(d + 2)/6 degrees of freedom.
+
+## Answer 6.C
+
+```{r}
+set.seed(104)
+sk<-function(x){
+  m1<-x
+  inv_sigma<-solve(cov(t(x)))
+  m1[1,]<-m1[1,]-mean(m1[1,])
+  m1[2,]<-m1[2,]-mean(m1[2,])
+  m3<-(t(m1)%*%inv_sigma%*%m1)^3
+  return(mean(m3))
+}
+d<-2
+n<-c(10,20,30,50,100,500)
+cv1<-qchisq(0.975,d*(d+1)*(d+2)/6)
+cv2<-qchisq(0.025,d*(d+1)*(d+2)/6)
+p.reject<-numeric(length(n))
+m<-10000
+for(i in 1:length(n)){
+  sktests<-numeric(m)
+  for(j in 1:m){
+    x<-rnorm(n[i])
+    y<-rnorm(n[i])
+    x0<-rbind(x,y)
+    sktests[j]<-as.integer((n[i]*sk(x0)/6)>=cv1 | (n[i]*sk(x0)/6)<=cv2)
+  }
+  p.reject[i]<-mean(sktests)
+}
+p.reject
+
+```
+
+模拟结果如上，分别为n=10,20,30,50,100,500时的第一类错误率的经验估计，可以看出当样本变大时，这些估计值接近理论水平α=0.05.
+
+## Question Discussion
+
+1.If we obtain the powers for two methods under a particular
+simulation setting with 10,000 experiments: say, 0.651 for one
+method and 0.676 for another method. Can we say the powers
+are different at 0.05 level?
+
+2.What is the corresponding hypothesis test problem?
+
+3.What test should we use? Z-test, two-sample t-test, paired-t
+test or McNemar test?
+
+4.What information is needed to test your hypothesis?
+
+## Answer Discussion
+
+1.No, we can't.
+
+2.Test null hypothesis H0 : t1e rate1= t1e rate2
+
+3.MCNemar test,because other tests need independence.
+
+4.Sample distribution.
+
+
+# Homework 6
+
+## Question 7.1
+
+Compute a jackknife estimate of the bias and the standard error of the correlation statistic in Example 7.2.
+
+## Answer 7.1
+
+```{r}
+data(law,package="bootstrap")
+n<-nrow(law)
+LSAT<-law$LSAT
+GPA<-law$GPA
+theta.hat<-cor(LSAT,GPA)
+
+
+theta.jack<-numeric(n)
+for(i in 1:n){
+  theta.jack[i]<-cor(LSAT[-i],GPA[-i])
+}
+bias<-(n-1)*(mean(theta.jack)-theta.hat)
+print(bias)
+
+se<-sqrt((n-1)*mean((theta.jack-mean(theta.jack))^2))
+print(se)
+
+round(c(bias=bias,se=se),8)
+```
+
+## Question 7.5
+
+Refer to Exercise 7.4. Compute 95% bootstrap confidence intervals for the
+mean time between failures 1/λ by the standard normal, basic, percentile,
+and BCa methods. Compare the intervals and explain why they may differ.
+
+## Answer 7.5
+
+```{r}
+library(fitdistrplus)
+library(boot)
+set.seed(123)
+
+theta.boot<-function(dat,i){
+  lambda<-fitdist(dat[i],distr="exp",method="mle")$estimate
+  1/lambda
+}
+data(aircondit,package = "boot")
+dat<-aircondit$hours
+boot.obj<-boot(dat,statistic=theta.boot,R=2000)
+print(boot.ci(boot.obj,type=c("basic","norm","perc","bca")))
+```
+
+## Question 7.8
+
+ Refer to Exercise 7.7. Obtain the jackknife estimates of bias and standard
+error of $\hat{\theta}$.
+
+## Answer 7.8
+
+```{r}
+data(scor,package="bootstrap")
+n<-nrow(scor)
+scor.cov<-cov(scor)
+ev<-eigen(scor.cov)
+val<-ev$values
+theta.hat<-val[1]/sum(val)
+
+theta.jack<-numeric(n)
+for(i in 1:n){
+  scor.cov.jack<-cov(scor[-i,])
+  ev.jack<-eigen(scor.cov.jack)
+  val.jack<-ev.jack$values
+  theta.jack[i]<-val.jack[1]/sum(val.jack)
+}
+bias<-(n-1)*(mean(theta.jack)-theta.hat)
+print(bias)
+
+se<-sqrt((n-1)*mean((theta.jack-mean(theta.jack))^2))
+print(se)
+
+round(c(bias=bias,se=se),8)
+```
+
+## Question 7.11
+
+In Example 7.18, leave-one-out (n-fold) cross validation was used to select the
+best fitting model. Use leave-two-out cross validation to compare the models.
+
+## Answer 7.11
+
+```{r}
+library(DAAG)
+attach(ironslag)
+n<-length(magnetic)
+e1<-e2<-e3<-e4<-matrix(nrow=n,ncol=n-1)
+
+for(i in 1:n){
+  y0<-magnetic[-i]
+  x0<-chemical[-i]
+  for(k in 1:(n-1)){
+    y<-y0[-k]
+    x<-x0[-k]
+    
+    J1 <- lm(y ~ x)
+    yhat1 <- J1$coef[1] + J1$coef[2] * chemical[k]
+    e1[i,k] <- magnetic[k] - yhat1
+    
+    J2 <- lm(y ~ x + I(x^2))
+    yhat2 <- J2$coef[1] + J2$coef[2] * chemical[k] +
+      J2$coef[3] * chemical[k]^2
+    e2[i,k] <- magnetic[k] - yhat2
+    
+    J3 <- lm(log(y) ~ x)
+    logyhat3 <- J3$coef[1] + J3$coef[2] * chemical[k]
+    yhat3 <- exp(logyhat3)
+    e3[i,k] <- magnetic[k] - yhat3
+    
+    J4 <- lm(log(y) ~ log(x))
+    logyhat4 <- J4$coef[1] + J4$coef[2] * log(chemical[k])
+    yhat4 <- exp(logyhat4)
+    e4[i,k] <- magnetic[k] - yhat4
+  }
+}
+
+
+```
+
+The following estimates for prediction error are obtained from the leave-two-out cross
+validation.
+
+```{r}
+c(mean(e1^2),mean(e2^2),mean(e3^2),mean(e4^2))
+```
+
+According to the prediction error criterion, Model 2, the quadratic model,
+would be the best fit for the data.
+
+```{r}
+a <- seq(10, 40, .1)
+L2 <- lm(magnetic ~ chemical + I(chemical^2))
+plot(chemical, magnetic, main="Quadratic", pch=16)
+yhat2 <- L2$coef[1] + L2$coef[2] * a + L2$coef[3] * a^2
+lines(a, yhat2, lwd=2)
+L2
+```
+
+The fitted regression equation for Model 2 is
+$$\hat{Y}=24.49262-1.39334X+0.05452X^2$$
+
+
+# Homework 7
+
+## Question 8.3
+
+The Count 5 test for equal variances in Section 6.4 is based on the maximum
+number of extreme points. Example 6.15 shows that the Count 5 criterion
+is not applicable for unequal sample sizes. Implement a permutation test for
+equal variance based on the maximum number of extreme points that applies
+when sample sizes are not necessarily equal.
+
+## Answer 8.3
+
+```{r}
+set.seed(123)
+maxout<-function(x,y) {
+ X<-x-mean(x)
+ Y<-y-mean(y)
+ outx<-sum(X > max(Y)) + sum(X < min(Y))
+ outy<-sum(Y > max(X)) + sum(Y < min(X))
+ return(max(c(outx, outy)))
+}
+
+R<-999
+n1<-20
+n2<-30
+mu1<-mu2<-0
+sigma1<-sigma2<-1
+x<-rnorm(n1,mu1,sigma1)
+y<-rnorm(n2,mu2,sigma2)
+z<-c(x,y)
+K<-1:50
+reps<-numeric(R)
+t0<-maxout(x,y)
+
+for(i in 1:R){
+  k<-sample(K,size=20,replace=FALSE)
+  x1<-z[k]
+  y1<-z[-k]
+  reps[i]<-maxout(x1,y1)
+}
+p<-mean(c(t0,reps)>5)
+p
+  
+```
+
+Construct two normal distribution, one with 20 samples, the other with 30 samples. And they are all the same distribution.
+
+The p value is 0.099, The ASL is 0.198 so the null hypothesis is not rejected. Hence the test is available.
+
+## Question 
+
+Design experiments for evaluating the performance of the NN,
+energy, and ball methods in various situations.
+
+1.Unequal variances and equal expectations
+
+2.Unequal variances and unequal expectations
+
+3.Non-normal distributions: t distribution with 1 df (heavy-tailed
+distribution), bimodel distribution (mixture of two normal
+distributions)
+ 
+4.Unbalanced samples (say, 1 case versus 10 controls)
+
+Note: The parameters should be chosen such that the powers
+are distinguishable (say, range from 0.3 to 0.8)
+
+## Answer
+
+```{r}
+library(RANN)
+library(boot)
+library(energy)
+library(Ball)
+
+Tn <- function(z, ix, sizes,k) {
+  n1 <- sizes[1]; n2 <- sizes[2]; n <- n1 + n2
+  if(is.vector(z)) z <- data.frame(z,0);
+  z <- z[ix, ];
+  NN <- nn2(data=z, k=k+1)
+  block1 <- NN$nn.idx[1:n1,-1]
+  block2 <- NN$nn.idx[(n1+1):n,-1]
+  i1 <- sum(block1 < n1 + .5); i2 <- sum(block2 > n1+.5)
+  (i1 + i2) / (k * n)
+}
+
+m <- 1e3; k<-3; p<-2; set.seed(12345)
+n1 <- n2 <- 30; R<-999; n <- n1+n2; N = c(n1,n2)
+eqdist.nn <- function(z,sizes,k){
+  boot.obj <- boot(data=z,statistic=Tn,R=R,
+                   sim = "permutation", sizes = sizes,k=k)
+  ts <- c(boot.obj$t0,boot.obj$t)
+  p.value <- mean(ts>=ts[1])
+  list(statistic=ts[1],p.value=p.value)
+}
+p.values <- matrix(NA,m,3)
+```
+
+1.Unequal variances and equal expectations
+n1=n2=30; mu1=mu2=0; sigma1=1, sigma2=1.5
+
+```{r}
+for(i in 1:m){
+  x <- matrix(rnorm(n1*p,0,1),ncol=p)
+  y <- matrix(rnorm(n2*p,0,1.5),ncol=p)
+  z <- rbind(x,y)
+  p.values[i,1] <- eqdist.nn(z,N,k)$p.value
+  p.values[i,2] <- eqdist.etest(z,sizes=N,R=R)$p.value
+  p.values[i,3] <- bd.test(x=x,y=y,num.permutations=999,seed=i*12345)$p.value
+}
+alpha <- 0.1;
+pow <- colMeans(p.values<alpha)
+round(c(NN=pow[1],Energy=pow[2],Ball=pow[3]),3)
+```
+
+We can see that Ball test could be more powerful than other two tests, and Energy test is slightly powerful than
+nearest NN test.
+
+2.
+n1=n2=30; mu1=0,mu2=0.3; sigma1=1, sigma2=1.5
+
+```{r}
+for(i in 1:m){
+  x <- matrix(rnorm(n1*p,0,1),ncol=p)
+  y <- matrix(rnorm(n2*p,0.3,1.5),ncol=p)
+  z <- rbind(x,y)
+  p.values[i,1] <- eqdist.nn(z,N,k)$p.value
+  p.values[i,2] <- eqdist.etest(z,sizes=N,R=R)$p.value
+  p.values[i,3] <- bd.test(x=x,y=y,num.permutations=999,seed=i*12345)$p.value
+}
+alpha <- 0.1;
+pow <- colMeans(p.values<alpha)
+round(c(NN=pow[1],Energy=pow[2],Ball=pow[3]),3)
+```
+
+We can see that Ball test could be more powerful than other two tests,and Energy test is  more powerful than
+nearest NN test.
+
+3.
+
+```{r}
+for(i in 1:m){
+  x <- matrix(rt(n1*p,1),ncol=p)
+  y <- cbind(rnorm(n2),rnorm(n2,0.5))
+  z <- rbind(x,y)
+  p.values[i,1] <- eqdist.nn(z,N,k)$p.value
+  p.values[i,2] <- eqdist.etest(z,sizes=N,R=R)$p.value
+  p.values[i,3] <- bd.test(x=x,y=y,num.permutations=999,seed=i*12345)$p.value
+}
+alpha <- 0.1;
+pow <- colMeans(p.values<alpha)
+round(c(NN=pow[1],Energy=pow[2],Ball=pow[3]),3)
+```
+
+We can see that Ball test and  Energy test  are  more powerful than
+nearest NN test, and they are close to 1.
+
+
+# Homework 8
+
+## Question 9.4
+
+ Implement a random walk Metropolis sampler for generating the standard
+Laplace distribution (see Exercise 3.2). For the increment, simulate from a
+normal distribution. Compare the chains generated when different variances
+are used for the proposal distribution. Also, compute the acceptance rates of
+each chain.
+
+## Answer 9.4
+
+```{r}
+set.seed(12345)
+f<-function(x){
+  return(exp(-abs(x))/2)
+}
+
+rw.Metropolis <- function(sigma, x0, N) {
+x <- numeric(N)
+x[1] <- x0
+u <- runif(N)
+k <- 0
+for (i in 2:N) {
+y <- rnorm(1, x[i-1], sigma)
+if (u[i] <= (f(y) / f(x[i-1])))
+x[i] <- y else {
+x[i] <- x[i-1]
+k <- k + 1
+} }
+return(list(x=x, k=k))
+}
+
+```
+
+
+Four chains are generated for different variances σ2 of the proposal distribution.
+
+```{r}
+N <- 2000
+sigma <- c(.5, 1, 2, 4)
+round(c(sigma1=sigma[1],sigma2=sigma[2],sigma3=sigma[3],sigma4=sigma[4]),2)
+x0 <- 25
+rw1 <- rw.Metropolis(sigma[1], x0, N)
+rw2 <- rw.Metropolis(sigma[2], x0, N)
+rw3 <- rw.Metropolis(sigma[3], x0, N)
+rw4 <- rw.Metropolis(sigma[4], x0, N)
+
+#number of candidate points rejected
+print(c(rw1$k, rw2$k, rw3$k, rw4$k))
+```
+
+We can see the 1st,2nd and 3rd chain has a rejection rate in the range [0.15, 0.5].
+Acceptance rates：
+```{r}
+round(c(sigma1=1-rw1$k/N,sigma2=1-rw2$k/N,sigma3=1-rw3$k/N,sigma4=1-rw4$k/N),4)
+```
+
+## Question 
+
+For Exercise 9.4, use the Gelman-Rubin method to monitor
+convergence of the chain, and run the chain until it converges
+approximately to the target distribution according to $\hat{R}$ < 1.2.
+
+## Answer
+Use the Gelman-Rubin method to monitor convergence of the chain of Exercise 9.4
+
+```{r}
+set.seed(12345)
+Gelman.Rubin <- function(psi) {
+
+psi <- as.matrix(psi)
+n <- ncol(psi)
+k <- nrow(psi)
+psi.means <- rowMeans(psi) 
+B <- n * var(psi.means)
+psi.w <- apply(psi, 1, "var") 
+W <- mean(psi.w)
+v.hat <- W*(n-1)/n + (B/n)
+r.hat <- v.hat / W
+return(r.hat)
+}
+
+k <- 4
+n <- 15000
+b <- 1000
+X <- matrix(0, nrow=k, ncol=n)
+for (i in 1:k)
+  X[i, ] <-rw.Metropolis(sigma[i], x0, n)$x
+
+psi <- t(apply(X, 1, cumsum))
+for (i in 1:nrow(psi))
+  psi[i,] <- psi[i,] / (1:ncol(psi))
+print(Gelman.Rubin(psi))
+
+
+for (i in 1:k)
+  plot(psi[i, (b+1):n], type="l",
+       xlab=i, ylab=bquote(psi))
+
+
+rhat <- rep(0, n)
+for (j in (b+1):n)
+rhat[j] <- Gelman.Rubin(psi[,1:j])
+plot(rhat[(b+1):n], type="l", xlab="", ylab="R")
+abline(h=1.2, lty=2)
+```
+
+We can see that The value of $\hat{R}$ is less than 1. within time 7000.
+
+## Question 11.4
+Find the intersection points A(k) in (0, √k) of the curves 
+$$S_{k-1}(a)=P(t(k-1)>\sqrt{\frac{a^2(k-1)}{k-a^2}})$$
+and
+$$S_{k}(a)=P(t(k)>\sqrt{\frac{a^2k}{k+1-a^2}})$$
+for k = 4 : 25, 100, 500, 1000, where t(k) is a Student t random variable with
+k degrees of freedom. (These intersection points determine the critical values
+for a t-test for scale-mixture errors proposed by Sz´ekely [260].)
+
+
+## Answer 11.4
+
+```{r}
+S<-function(k,a){
+  return(1-pt(sqrt((a^2)*k/(k+1-a^2)),k))
+}
+f<-function(a){
+  S(k-1,a)-S(k,a)
+}
+
+```
+
+k=25
+
+```{r}
+k=25
+solution <- uniroot(f,c(0.01,2))
+unlist(solution)
+```
+
+k=100
+
+```{r}
+k=100
+solution <- uniroot(f,c(0.01,2))
+unlist(solution)
+```
+
+k=500
+
+```{r}
+k=500
+solution <- uniroot(f,c(0.01,2))
+unlist(solution)
+```
+
+k=1000
+
+```{r}
+k=1000
+solution <- uniroot(f,c(0.01,2))
+unlist(solution)
+```
+
+
+
+# Homework 9
+
+## Question 1
+
+A-B-O blood type problem
+
+Observed data: nA· = nAA + nAO = 444 (A-type),
+nB· = nBB + nBO = 132 (B-type), nOO = 361 (O-type),
+nAB = 63 (AB-type).
+
+Use EM algorithm to solve MLE of p and q (consider missing
+data nAA and nBB).
+
+Record the values of p and q that maximize the conditional
+likelihood in each EM steps, calculate the corresponding
+log-maximum likelihood values (for observed data), are they
+increasing?
+
+## Answer 1
+
+We can get that
+
+```{r}
+library(nloptr)
+
+eval_f0 = function(x,x1,n.A=444,n.B=132,nOO=361,nAB=63) {
+  
+  r1 = 1-sum(x1)
+  nAA = n.A*x1[1]^2/(x1[1]^2+2*x1[1]*r1)
+  nBB = n.B*x1[2]^2/(x1[2]^2+2*x1[2]*r1)
+  r = 1-sum(x)
+  return(-2*nAA*log(x[1])-2*nBB*log(x[2])-2*nOO*log(r)-
+           (n.A-nAA)*log(2*x[1]*r)-(n.B-nBB)*log(2*x[2]*r)-nAB*log(2*x[1]*x[2]))
+}
+
+
+
+eval_g0 = function(x,x1,n.A=444,n.B=132,nOO=361,nAB=63) {
+  return(sum(x)-0.999999)
+}
+
+opts = list("algorithm"="NLOPT_LN_COBYLA",
+             "xtol_rel"=1.0e-8)
+mle = NULL
+r = matrix(0,1,2)
+r = rbind(r,c(0.2,0.35))# the beginning value of p0 and q0
+j = 2
+while (sum(abs(r[j,]-r[j-1,]))>1e-8) {
+res = nloptr( x0=c(0.2,0.25),
+               eval_f=eval_f0,
+               lb = c(0,0), ub = c(1,1), 
+               eval_g_ineq = eval_g0, 
+               opts = opts, x1=r[j,],n.A=444,n.B=132,nOO=361,nAB=63 )
+j = j+1
+r = rbind(r,res$solution)
+mle = c(mle,eval_f0(x=r[j,],x1=r[j-1,]))
+}
+
+r 
+#the max likelihood values
+plot(-mle,type = 'l')
+```
+
+
+## Question 2
+
+Use both for loops and lapply() to fit linear models to the
+mtcars using the formulas stored in this list:
+formulas <- list(
+mpg ~ disp,
+mpg ~ I(1 / disp),
+mpg ~ disp + wt,
+mpg ~ I(1 / disp) + wt
+)
+
+## Answer 2
+
+for loops:
+
+```{r}
+formulas <- list(
+mpg ~ disp,
+mpg ~ I(1 / disp),
+mpg ~ disp + wt,
+mpg ~ I(1 / disp) + wt
+)
+
+l<-formulas
+
+for(i in 1:4){
+  l[[i]]<-lm(formulas[[i]],mtcars)
+}
+
+l
+```
+
+lapply():
+
+```{r}
+formulas <- list(
+mpg ~ disp,
+mpg ~ I(1 / disp),
+mpg ~ disp + wt,
+mpg ~ I(1 / disp) + wt
+)
+
+lapply(formulas,function(formula) lm(formula,mtcars))
+```
+
+## Question 3
+
+The following code simulates the performance of a t-test for
+non-normal data. Use sapply() and an anonymous function
+to extract the p-value from every trial.
+trials <- replicate(
+100,
+t.test(rpois(10, 10), rpois(7, 10)),
+simplify = FALSE
+)
+Extra challenge: get rid of the anonymous function by using
+[[ directly.
+
+
+## Answer 3
+
+```{r}
+set.seed(12345)
+trials <- replicate(100, t.test(rpois(10, 10), rpois(7, 10)),
+simplify = FALSE
+)
+sapply(trials,function(trial) trial$p.value)
+```
+
+## Question 4
+
+Implement a combination of Map() and vapply() to create an
+lapply() variant that iterates in parallel over all of its inputs
+and stores its outputs in a vector (or a matrix). What arguments should the function take?
+
+## Answer 4
+
+```{r}
+x<-matrix(1:10,nrow = 2)
+x
+vapply(x,function(x) as.vector(x),c(1))
+```
+
+
+# Homework 10
+
+## Question 
+
+Write an Rcpp function for Exercise 9.4 (page 277, Statistical
+Computing with R).
+
+ Compare the corresponding generated random numbers with
+those by the R function you wrote before using the function
+“qqplot”.
+
+Campare the computation time of the two functions with the
+function “microbenchmark”.
+
+Comments your results.
+
+## Answer
+
+```{r}
+library(Rcpp)
+```
+
+
+Rcpp function:
+
+```{r,eval=FALSE}
+#include <Rcpp.h>
+using namespace Rcpp;
+
+double lap_f(double x){
+  return 0.5 * exp(-abs(x));
+}
+
+
+// [[Rcpp::export]]
+
+NumericVector MetropolisC(double sigma, double x0, int N){
+  NumericVector x(N);
+  x[0] = x0;
+  NumericVector u(N);  
+  u = runif(N);
+  int k = 0;
+  for (int i = 1; i < N; ++i){
+    NumericVector y(1);
+    y = rnorm(1, x[i-1],sigma);
+    if ( u[i] <= lap_f(y[0])/lap_f(x[i-1])) 
+          x[i] = y[0] ;
+    else{
+          x[i] = x[i-1];
+          k = k+1;
+    }       
+  }
+  return x;
+} 
+
+```
+
+
+```{r}
+set.seed(12345)
+lap_f = function(x) exp(-abs(x))
+
+rw.Metropolis = function(sigma, x0, N){
+ x = numeric(N)
+ x[1] = x0
+ u = runif(N)
+ k = 0
+ for (i in 2:N) {
+  y = rnorm(1, x[i-1], sigma)
+  if (u[i] <= (lap_f(y) / lap_f(x[i-1]))) x[i] = y 
+  else {
+  x[i] = x[i-1]
+  k = k+1
+  }
+ }
+ return(list(x = x, k = k))
+}
+
+
+dir_cpp <- '../src/'
+
+sourceCpp(paste0(dir_cpp,"Homework.cpp")) 
+
+n<-4
+N<-2000
+sigma<-c(0.05,0.5,2,16)
+
+x0<-25
+rw1c<-MetropolisC(sigma[1],x0,N)
+rw2c<-MetropolisC(sigma[2],x0,N)
+rw3c<-MetropolisC(sigma[3],x0,N)
+rw4c<-MetropolisC(sigma[4],x0,N)
+rw1<-rw.Metropolis(sigma[1],x0,N)
+rw2<-rw.Metropolis(sigma[2],x0,N)
+rw3<-rw.Metropolis(sigma[3],x0,N)
+rw4<-rw.Metropolis(sigma[4],x0,N)
+
+```
+
+
+Compare the corresponding generated random numbers with those by  R function:
+```{r}
+plot(rw1$x,type="l",xlab=bquote(sigma==0.05),ylab="X",main="R function")
+plot(rw1c,type="l",xlab=bquote(sigma==0.05),ylab="X",main="Rcpp function")
+plot(rw2$x,type="l",xlab=bquote(sigma==0.5),ylab="X",main="R function")
+plot(rw2c,type="l",xlab=bquote(sigma==0.5),ylab="X",main="Rcpp function")
+plot(rw3$x,type="l",xlab=bquote(sigma==2),ylab="X",main="R function")
+plot(rw3c,type="l",xlab=bquote(sigma==2),ylab="X",main="Rcpp function")
+plot(rw4$x,type="l",xlab=bquote(sigma==16),ylab="X",main="R function")
+plot(rw4c,type="l",xlab=bquote(sigma==16),ylab="X",main="Rcpp function")
+```
+We can see that they are almost the same
+
+Campare the computation time of the two functions with the function “microbenchmark”.
+```{r}
+library(microbenchmark)
+ts1 <- microbenchmark(rw1R=rw.Metropolis(sigma[1],x0,N),rw1C=MetropolisC(sigma[1],x0,N))
+summary(ts1)[,c(1,3,5,6)]
+
+ts2 <- microbenchmark(rw2R=rw.Metropolis(sigma[2],x0,N),rw2C=MetropolisC(sigma[2],x0,N))
+summary(ts2)[,c(1,3,5,6)]
+
+ts3 <- microbenchmark(rw3R=rw.Metropolis(sigma[3],x0,N),rw3C=MetropolisC(sigma[3],x0,N))
+summary(ts3)[,c(1,3,5,6)]
+
+ts4 <- microbenchmark(rw4R=rw.Metropolis(sigma[4],x0,N),rw4C=MetropolisC(sigma[4],x0,N))
+summary(ts4)[,c(1,3,5,6)]
+```
+
+We can see that with each sigma, the Rcpp function runs much faster than the R function.
+
+Hence we can conclude that Rcpp function can get the same result as R function and it runs faster. So we can use the Rcpp function if we can write the corresponding code to reduce the run time.

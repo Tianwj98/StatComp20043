@@ -1,0 +1,16 @@
+Package: StatComp20043
+Type: Package
+Title: Package buid by 20043
+Version: 1.0
+Date: 2020-12-19
+Author: 20043
+Maintainer: 20043 <631752610@qq.com>
+Description: Homework and two functions are included in this package.
+License: GPL (>= 2)
+Imports: Rcpp (>= 1.0.5), microbenchmark, psych, boot, bootstrap, DAAG, Ball, RANN, energy
+LinkingTo: Rcpp
+RoxygenNote: 7.1.1
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
+URL: http://github.com/Tianwj98/StatComp
+BugReports: http://github.com/Tianwj98/StatComp/issues
